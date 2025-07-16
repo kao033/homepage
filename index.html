@@ -40,23 +40,42 @@
     }
     #click-overlay {
       position: absolute;
-      top: calc(100vh * 0.68);
+      top: calc(100vh * 0.78);
       left: 50%;
       transform: translateX(-50%);
-      width: 360px;
-      height: calc(200px + 30vh);
+      width: 320px;
+      height: 140px;
       cursor: pointer;
-      z-index: 11;
+      z-index: 1002;
     }
-    #tap-audio {
-      position: fixed;
+    .audio-zone {
+      position: absolute;
+      z-index: 1000;
+      background: transparent;
+    }
+    #audio-top {
       top: 0;
       left: 0;
       width: 100vw;
-      height: 100vh;
-      background: transparent;
-      border: none;
-      z-index: 9;
+      height: calc(100vh * 0.78);
+    }
+    #audio-left {
+      top: calc(100vh * 0.78);
+      left: 0;
+      width: calc((100vw - 320px) / 2);
+      height: 140px;
+    }
+    #audio-right {
+      top: calc(100vh * 0.78);
+      right: 0;
+      width: calc((100vw - 320px) / 2);
+      height: 140px;
+    }
+    #audio-bottom {
+      bottom: 0;
+      left: 0;
+      width: 100vw;
+      height: calc(100vh - (100vh * 0.78 + 140px));
     }
     @media (max-aspect-ratio: 9/16) {
       video {
@@ -64,37 +83,53 @@
         height: 100vh;
       }
       #click-overlay {
-        top: calc(100vh * 0.76);
-        width: 340px;
-        height: calc(180px + 30vh);
+        top: calc(100vh * 0.84);
+        width: 300px;
+        height: 130px;
+      }
+      #audio-top {
+        height: calc(100vh * 0.84);
+      }
+      #audio-left, #audio-right {
+        top: calc(100vh * 0.84);
+        height: 130px;
+        width: calc((100vw - 300px) / 2);
+      }
+      #audio-bottom {
+        height: calc(100vh - (100vh * 0.84 + 130px));
       }
     }
   </style>
 </head>
 <body>
   <div id="video-wrapper">
-    <video id="main-video" autoplay muted playsinline loop>
+    <video id="main-video" autoplay muted playsinline>
       <source src="wide.mp4" type="video/mp4">
     </video>
     <div id="click-overlay"></div>
   </div>
-  <button id="tap-audio"></button>
+  <div id="audio-top" class="audio-zone"></div>
+  <div id="audio-left" class="audio-zone"></div>
+  <div id="audio-right" class="audio-zone"></div>
+  <div id="audio-bottom" class="audio-zone"></div>
   <audio id="bg-music" src="audio.mp3" loop preload="auto"></audio>
   <script>
     const music = document.getElementById('bg-music');
     const overlay = document.getElementById('click-overlay');
-    const tapAudio = document.getElementById('tap-audio');
+    const audioZones = document.querySelectorAll('.audio-zone');
     let audioUnlocked = false;
+
+    function unlockAudio() {
+      music.muted = false;
+      music.volume = 1;
+      return music.play().then(() => {
+        audioUnlocked = true;
+      }).catch(err => console.warn("音樂播放錯誤：", err));
+    }
 
     function toggleAudio() {
       if (!audioUnlocked) {
-        music.muted = false;
-        music.volume = 1;
-        music.play().then(() => {
-          audioUnlocked = true;
-        }).catch(err => {
-          console.warn("音樂播放錯誤：", err);
-        });
+        unlockAudio();
       } else {
         music.muted = !music.muted;
         music.volume = music.muted ? 0 : 1;
@@ -102,33 +137,30 @@
     }
 
     function unlockAudioAndEnter() {
-      toggleAudio();
-      setTimeout(() => {
-        window.location.href = 'mine.html';
-      }, 300);
+      unlockAudio().then(() => {
+        setTimeout(() => {
+          window.location.href = 'mine.html';
+        }, 300);
+      });
     }
 
-    overlay.addEventListener('click', unlockAudioAndEnter);
+    overlay.addEventListener('click', (e) => {
+      e.stopPropagation();
+      unlockAudioAndEnter();
+    });
 
-    tapAudio.addEventListener('click', function (e) {
-      const overlayRect = overlay.getBoundingClientRect();
-      if (
-        e.clientX < overlayRect.left ||
-        e.clientX > overlayRect.right ||
-        e.clientY < overlayRect.top ||
-        e.clientY > overlayRect.bottom
-      ) {
+    audioZones.forEach(zone => {
+      zone.addEventListener('click', (e) => {
         toggleAudio();
-      }
+      });
     });
 
     function checkVideoType() {
       const video = document.getElementById('main-video');
       const source = video.querySelector('source');
-      const containerAspect = window.innerWidth / window.innerHeight;
-      const videoAspect = 1920 / 1080;
+      const screenWidth = window.innerWidth;
 
-      if (containerAspect < videoAspect) {
+      if (screenWidth < 1920) {
         if (!source.src.includes('tall.mp4')) {
           source.setAttribute('src', 'tall.mp4');
           video.load();
