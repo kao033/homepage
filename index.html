@@ -40,11 +40,11 @@
     }
     #click-overlay {
       position: absolute;
-      top: calc(100vh * 0.72);
+      top: calc(100vh * 0.68);
       left: 50%;
       transform: translateX(-50%);
-      width: 340px;
-      height: calc(160px + 30vh);
+      width: 360px;
+      height: calc(200px + 30vh);
       cursor: pointer;
       z-index: 10;
     }
@@ -54,9 +54,9 @@
         height: 100vh;
       }
       #click-overlay {
-        top: calc(100vh * 0.80);
-        width: 320px;
-        height: calc(150px + 30vh);
+        top: calc(100vh * 0.76);
+        width: 340px;
+        height: calc(180px + 30vh);
       }
     }
   </style>
@@ -68,7 +68,7 @@
     </video>
     <div id="click-overlay"></div>
   </div>
-  <audio id="bg-music" src="audio.mp3" loop autoplay preload="auto"></audio>
+  <audio id="bg-music" src="audio.mp3" loop preload="auto"></audio>
   <script>
     const music = document.getElementById('bg-music');
     const overlay = document.getElementById('click-overlay');
@@ -105,7 +105,6 @@
     function checkVideoType() {
       const video = document.getElementById('main-video');
       const source = video.querySelector('source');
-
       const containerAspect = window.innerWidth / window.innerHeight;
       const videoAspect = 1920 / 1080;
 
