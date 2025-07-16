@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BLOOMPARK</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      background: url('background-image.png') center center no-repeat;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    #video-wrapper {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      z-index: 0;
+    }
+    video {
+      height: 100vh;
+      width: auto;
+      max-width: none;
+      object-fit: contain;
+    }
+    #click-overlay {
+      position: absolute;
+      top: calc(100vh * 0.72);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 340px;
+      height: calc(160px + 30vh);
+      cursor: pointer;
+      z-index: 10;
+    }
+    @media (max-aspect-ratio: 9/16) {
+      video {
+        width: auto;
+        height: 100vh;
+      }
+      #click-overlay {
+        top: calc(100vh * 0.80);
+        width: 320px;
+        height: calc(150px + 30vh);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="video-wrapper">
+    <video id="main-video" autoplay muted playsinline loop>
+      <source src="wide.mp4" type="video/mp4">
+    </video>
+    <div id="click-overlay"></div>
+  </div>
+  <audio id="bg-music" src="audio.mp3" loop autoplay preload="auto"></audio>
+  <script>
+    const music = document.getElementById('bg-music');
+    const overlay = document.getElementById('click-overlay');
+    let audioUnlocked = false;
+
+    function unlockAudio() {
+      if (!audioUnlocked) {
+        music.muted = false;
+        music.volume = 1;
+        const playAttempt = music.play();
+        if (playAttempt) {
+          playAttempt.then(() => {
+            audioUnlocked = true;
+          }).catch(err => {
+            console.warn("音樂播放錯誤：", err);
+          });
+        }
+      }
+    }
+
+    function unlockAudioAndEnter() {
+      unlockAudio();
+      setTimeout(() => {
+        window.location.href = 'mine.html';
+      }, 300);
+    }
+
+    overlay.addEventListener('click', unlockAudioAndEnter);
+
+    document.addEventListener('pointerdown', () => {
+      unlockAudio();
+    }, { once: true });
+
+    function checkVideoType() {
+      const video = document.getElementById('main-video');
+      const source = video.querySelector('source');
+
+      const containerAspect = window.innerWidth / window.innerHeight;
+      const videoAspect = 1920 / 1080;
+
+      if (containerAspect < videoAspect) {
+        if (!source.src.includes('tall.mp4')) {
+          source.setAttribute('src', 'tall.mp4');
+          video.load();
+        }
+      } else {
+        if (!source.src.includes('wide.mp4')) {
+          source.setAttribute('src', 'wide.mp4');
+          video.load();
+        }
+      }
+    }
+
+    window.addEventListener('resize', checkVideoType);
+    window.addEventListener('load', () => {
+      checkVideoType();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>新文化城安 - E戶</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+    body {
+      font-family: sans-serif;
+    }
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      z-index: 0;
+    }
+    .sidebar {
+      position: absolute;
+      top: 50%;
+      left: 8pt;
+      transform: translateY(-50%);
+      background: linear-gradient(to bottom, #89f7fe, #66a6ff);
+      border-radius: 24px;
+      padding: 9px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      z-index: 2;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      font-size: 17px;
+      line-height: 1.2;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+    }
+    .submenu {
+      position: absolute;
+      top: 50%;
+      left: 48pt;
+      transform: translateY(-50%);
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 2;
+    }
+    .submenu a {
+      background: rgba(0, 0, 0, 0.3);
+      color: white;
+      padding: 9px;
+      border-radius: 24px;
+      text-decoration: none;
+      font-weight: normal;
+      text-align: center;
+      font-size: 17px;
+      line-height: 1.2;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+    }
+    .submenu a:hover {
+      background: rgba(255,255,255,0.3);
+    }
+  </style>
+</head>
+<body>
+
+<iframe src="https://vr-7.justeasy.cn/vipweb/1752660814/3269789/ya1a711m99b245z6/YLAuBDbaqihQ/c87ff5151e4b0b57bb91d5963dc2e39c/1737863376.html" allowfullscreen></iframe>
+
+<div class="sidebar" onclick="toggleMenu()" id="mainButton">
+  <span>&#9660;</span><br>新<br>文<br>化<br>城<br>安<br>｜<br>E<br>戶
+</div>
+
+<div class="submenu" id="submenu">
+  <a href="mine.html">新<br>文<br>化<br>城<br>安<br>｜<br>A<br>戶</a>
+<a href="mine_g.html">新<br>文<br>化<br>城<br>安<br>｜<br>G<br>戶</a>
+<a href="mine_h.html">新<br>文<br>化<br>城<br>安<br>｜<br>H<br>戶</a>
+</div>
+
+<script>
+  let expanded = false;
+  function toggleMenu() {
+    expanded = !expanded;
+    document.getElementById("submenu").style.display = expanded ? "flex" : "none";
+    document.getElementById("mainButton").innerHTML = (expanded ? "&#9654;" : "&#9660;") + "<br>新<br>文<br>化<br>城<br>安<br>｜<br>E<br>戶";
+  }
+</script>
+
+</body>
+</html>
