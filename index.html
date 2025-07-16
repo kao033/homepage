@@ -46,7 +46,7 @@
       width: 360px;
       height: calc(200px + 30vh);
       cursor: pointer;
-      z-index: 10;
+      z-index: 11;
     }
     #tap-audio {
       position: fixed;
@@ -55,9 +55,10 @@
       width: 100vw;
       height: 100vh;
       opacity: 0;
-      z-index: 9999;
+      z-index: 10;
       border: none;
       background: transparent;
+      pointer-events: auto;
     }
     @media (max-aspect-ratio: 9/16) {
       video {
@@ -95,7 +96,7 @@
         if (playAttempt) {
           playAttempt.then(() => {
             audioUnlocked = true;
-            tapAudio.remove();
+            tapAudio.style.display = 'none';
           }).catch(err => {
             console.warn("音樂播放錯誤：", err);
           });
@@ -111,7 +112,18 @@
     }
 
     overlay.addEventListener('click', unlockAudioAndEnter);
-    tapAudio.addEventListener('click', unlockAudio);
+
+    tapAudio.addEventListener('click', function (e) {
+      const overlayRect = overlay.getBoundingClientRect();
+      if (
+        e.clientX < overlayRect.left ||
+        e.clientX > overlayRect.right ||
+        e.clientY < overlayRect.top ||
+        e.clientY > overlayRect.bottom
+      ) {
+        unlockAudio();
+      }
+    });
 
     function checkVideoType() {
       const video = document.getElementById('main-video');
