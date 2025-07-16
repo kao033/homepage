@@ -48,6 +48,17 @@
       cursor: pointer;
       z-index: 10;
     }
+    #tap-audio {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      opacity: 0;
+      z-index: 9999;
+      border: none;
+      background: transparent;
+    }
     @media (max-aspect-ratio: 9/16) {
       video {
         width: auto;
@@ -68,10 +79,12 @@
     </video>
     <div id="click-overlay"></div>
   </div>
+  <button id="tap-audio"></button>
   <audio id="bg-music" src="audio.mp3" loop preload="auto"></audio>
   <script>
     const music = document.getElementById('bg-music');
     const overlay = document.getElementById('click-overlay');
+    const tapAudio = document.getElementById('tap-audio');
     let audioUnlocked = false;
 
     function unlockAudio() {
@@ -82,6 +95,7 @@
         if (playAttempt) {
           playAttempt.then(() => {
             audioUnlocked = true;
+            tapAudio.remove();
           }).catch(err => {
             console.warn("音樂播放錯誤：", err);
           });
@@ -97,10 +111,7 @@
     }
 
     overlay.addEventListener('click', unlockAudioAndEnter);
-
-    document.addEventListener('pointerdown', () => {
-      unlockAudio();
-    }, { once: true });
+    tapAudio.addEventListener('click', unlockAudio);
 
     function checkVideoType() {
       const video = document.getElementById('main-video');
