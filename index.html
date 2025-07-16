@@ -88,24 +88,23 @@
     const tapAudio = document.getElementById('tap-audio');
     let audioUnlocked = false;
 
-    function unlockAudio() {
+    function toggleAudio() {
       if (!audioUnlocked) {
         music.muted = false;
         music.volume = 1;
-        const playAttempt = music.play();
-        if (playAttempt) {
-          playAttempt.then(() => {
-            audioUnlocked = true;
-            tapAudio.style.display = 'none';
-          }).catch(err => {
-            console.warn("音樂播放錯誤：", err);
-          });
-        }
+        music.play().then(() => {
+          audioUnlocked = true;
+        }).catch(err => {
+          console.warn("音樂播放錯誤：", err);
+        });
+      } else {
+        music.muted = !music.muted;
+        music.volume = music.muted ? 0 : 1;
       }
     }
 
     function unlockAudioAndEnter() {
-      unlockAudio();
+      toggleAudio();
       setTimeout(() => {
         window.location.href = 'mine.html';
       }, 300);
@@ -121,7 +120,7 @@
         e.clientY < overlayRect.top ||
         e.clientY > overlayRect.bottom
       ) {
-        unlockAudio();
+        toggleAudio();
       }
     });
 
